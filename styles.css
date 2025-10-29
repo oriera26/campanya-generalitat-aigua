@@ -1,0 +1,652 @@
+/* ---------------------------------- */
+/* CONFIGURACIÓ GLOBAL       */
+/* ---------------------------------- */
+:root {
+    --font-primary: 'Poppins', sans-serif;
+    
+    --color-bg-start: #f0f4f8;
+    --color-bg-end: #d9e2ec;
+    
+    --color-panel-bg: rgba(255, 255, 255, 0.85);
+    --color-panel-border: rgba(255, 255, 255, 0.95);
+    
+    --color-text-primary: #1a2b4b;
+    --color-text-secondary: #5a6b8c;
+    
+    --color-water-dark: #005c97;
+    --color-water-mid: #368ac0;
+    --color-water-light: #70c1ff;
+    
+    --color-glass-btn: linear-gradient(135deg, #6dd5ed, #2193b0);
+    --color-bottle-btn: linear-gradient(135deg, #005c97, #368ac0);
+    --color-reset-btn: linear-gradient(135deg, #f85032, #e73827);
+    --color-chart-btn: linear-gradient(135deg, #89f7fe, #66a6ff);
+    
+    --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --shadow-strong: 0 10px 30px rgba(0, 92, 151, 0.15);
+    --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.2);
+    
+    --border-radius: 24px;
+    --border-radius-small: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
+    min-height: 100vh;
+    color: var(--color-text-primary);
+    overflow-x: hidden;
+    cursor: default;
+    position: relative;
+}
+
+/* Canvas para el efecto WebGL */
+#webgl-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------------------------------- */
+/* CAPÇALERA              */
+/* ---------------------------------- */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--color-water-dark), var(--color-water-mid));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 5px 15px rgba(0, 92, 151, 0.2);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--color-text-secondary);
+    margin-top: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------------------------------- */
+/* ESTRUCTURA PRINCIPAL         */
+/* ---------------------------------- */
+.main-content {
+    width: 100%;
+}
+
+.app-wrapper {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.water-drop-panel,
+.info-panel,
+.modal-content {
+    background: var(--color-panel-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-strong);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-panel-border);
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Efecto de borde líquido */
+.water-drop-panel::before,
+.info-panel::before,
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        rgba(112, 193, 255, 0.8), 
+        rgba(0, 92, 151, 0.8), 
+        rgba(112, 193, 255, 0.8));
+    border-radius: var(--border-radius);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: liquidBorder 8s infinite linear;
+}
+
+.water-drop-panel:hover::before,
+.info-panel:hover::before,
+.modal-content:hover::before {
+    opacity: 1;
+}
+
+@keyframes liquidBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ---------------------------------- */
+/* PANELL GOTA D'AIGUA (EMOJI)    */
+/* ---------------------------------- */
+.water-drop-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    top: 30px;
+}
+
+/* Contenidor de la gota */
+.water-drop-container {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 30px;
+    display: grid;
+    place-items: center;
+    perspective: 1000px;
+}
+
+/* Gota de agua 3D */
+.water-drop-3d {
+    width: 250px;
+    height: 300px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.water-drop-3d:hover {
+    transform: rotateY(10deg) rotateX(5deg);
+}
+
+.drop-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(112, 193, 255, 0.9), rgba(0, 92, 151, 0.9));
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 
+        inset 0 -10px 30px rgba(0, 0, 0, 0.2),
+        0 10px 30px rgba(0, 92, 151, 0.3);
+    overflow: hidden;
+    transform: translateZ(20px);
+}
+
+.drop-inner {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(112, 193, 255, 0.9), rgba(0, 92, 151, 0.9));
+    transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 0 0 50% 50% / 0 0 40% 40%;
+    box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.3);
+}
+
+.drop-highlight {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 40%;
+    height: 20%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    filter: blur(10px);
+    transform: translateZ(30px);
+}
+
+.water-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    transition: all 0.5s ease;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* ---------------------------------- */
+/* CONTROLS D'AIGUA           */
+/* ---------------------------------- */
+.water-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.water-btn, .chart-btn {
+    --btn-shadow-color: rgba(0, 92, 151, 0.3);
+    
+    border: none;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 5px 15px var(--btn-shadow-color);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+}
+
+.water-btn:hover, .chart-btn:hover {
+    transform: translateY(-5px) scale(1.05) translateZ(10px);
+    box-shadow: 0 12px 25px var(--btn-shadow-color);
+}
+
+.water-btn:active, .chart-btn:active {
+    transform: translateY(-2px) scale(0.98) translateZ(5px);
+}
+
+.glass-btn {
+    background: var(--color-glass-btn);
+    --btn-shadow-color: rgba(33, 147, 176, 0.4);
+}
+
+.bottle-btn {
+    background: var(--color-bottle-btn);
+    --btn-shadow-color: rgba(0, 92, 151, 0.4);
+}
+
+.reset-btn {
+    background: var(--color-reset-btn);
+    --btn-shadow-color: rgba(231, 56, 39, 0.4);
+}
+
+.chart-btn {
+    background: var(--color-chart-btn);
+    --btn-shadow-color: rgba(102, 166, 255, 0.4);
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+}
+
+/* ---------------------------------- */
+/* PANELL D'INFORMACIÓ          */
+/* ---------------------------------- */
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Historial */
+.history-list-wrapper {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+.history-list-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+.history-list-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 92, 151, 0.05);
+    border-radius: 10px;
+}
+.history-list-wrapper::-webkit-scrollbar-thumb {
+    background: var(--color-water-mid);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--border-radius-small);
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+}
+.history-item:hover {
+    transform: translateX(5px) translateZ(5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+.history-item-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.history-icon {
+    font-size: 1.5rem;
+    color: var(--color-water-mid);
+    width: 30px;
+    text-align: center;
+}
+.history-text {
+    font-size: 1rem;
+    font-weight: 500;
+}
+.history-time {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+.delete-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.delete-btn:hover {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    transform: scale(1.2);
+}
+
+/* Secció del Gràfic */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chart-controls {
+    display: flex;
+    gap: 10px;
+}
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* ---------------------------------- */
+/* PEU DE PÀGINA           */
+/* ---------------------------------- */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------------------------------- */
+/* MODAL                */
+/* ---------------------------------- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    position: relative;
+    margin: 5% auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 900px;
+    animation: scaleIn 0.3s ease-out;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.close-btn:hover {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    transform: scale(1.1);
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--color-text-primary);
+    font-size: 1.8rem;
+}
+
+.modal-chart-wrapper {
+    height: 60vh;
+}
+
+/* ---------------------------------- */
+/* ANIMACIONS I RESPONSIVITAT   */
+/* ---------------------------------- */
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+.tippy-box[data-theme~='premium'] {
+    background-color: var(--color-text-primary);
+    color: white;
+    font-family: var(--font-primary);
+    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: var(--shadow-strong);
+}
+.tippy-box[data-theme~='premium'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: var(--color-text-primary);
+}
+.tippy-box[data-theme~='premium'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: var(--color-text-primary);
+}
+
+/* Responsivitat */
+@media (max-width: 1200px) {
+    .app-wrapper {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .app-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .water-drop-panel {
+        position: static;
+    }
+    .water-drop-container {
+        max-width: 300px;
+    }
+    .history-list-wrapper {
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    .title {
+        font-size: 2.5rem;
+    }
+    .water-btn {
+        width: 65px;
+        height: 65px;
+        font-size: 1.6rem;
+    }
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+    }
+    .modal-chart-wrapper {
+        height: 50vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    .title {
+        font-size: 2rem;
+    }
+    .subtitle {
+        font-size: 1rem;
+    }
+    .water-drop-panel, .info-panel {
+        padding: 20px;
+    }
+    .water-drop-container {
+        max-width: 250px;
+    }
+    .water-percentage {
+        font-size: 3rem;
+    }
+    .water-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.4rem;
+    }
+    .history-item {
+        padding: 12px 15px;
+    }
+    .history-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Efecto de partículas */
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.particle {
+    position: absolute;
+    background: rgba(112, 193, 255, 0.6);
+    border-radius: 50%;
+    animation: float 15s infinite linear;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Animación de onda para el agua */
+@keyframes waveRipple {
+    0% {
+        transform: translateY(-100%) scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Estilos específicos para PWA */
+@media all and (display-mode: standalone) {
+    body {
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .container {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}

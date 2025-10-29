@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidratació Premium - Seguiment Avançat d'Aigua</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a2b4b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Hidratació Premium">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Fonts i icones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    
+    <!-- Estils -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+</head>
+<body>
+    <!-- Canvas para el efecto WebGL -->
+    <canvas id="webgl-canvas"></canvas>
+    
+    <!-- Partículas flotantes -->
+    <div class="particles-container" id="particlesContainer"></div>
+    
+    <div class="container">
+        <header class="header animate__animated animate__fadeInDown">
+            <h1 class="title">Hidratació Premium</h1>
+            <p class="subtitle">El teu assistent personal d'hidratació amb física d'aigua real.</p>
+        </header>
+
+        <main class="main-content">
+            <section class="app-wrapper animate__animated animate__fadeInUp">
+                <div class="water-drop-panel">
+                    
+                    <div class="water-drop-container">
+                        <div class="water-drop-3d">
+                            <div class="drop-outer">
+                                <div class="drop-inner" id="waterDropFill"></div>
+                                <div class="drop-highlight"></div>
+                            </div>
+                        </div>
+                        <div class="water-percentage" id="waterPercentage">0%</div>
+                    </div>
+                    <div class="water-controls">
+                        <button class="water-btn glass-btn" id="addGlass" data-tippy-content="Afegir Got (250ml)">
+                            <i class="fa-solid fa-glass-water"></i>
+                        </button>
+                        
+                        <button class="water-btn bottle-btn" id="addBottle" data-tippy-content="Afegir Ampolla (1L)">
+                            <i class="fa-solid fa-bottle-water"></i>
+                        </button>
+                        
+                        <button class="water-btn reset-btn" id="resetWater" data-tippy-content="Eliminar Tot">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="info-panel">
+                    <section class="water-history">
+                        <h2 class="section-title">Historial d'Avui</h2>
+                        <div class="history-list-wrapper">
+                            <div class="history-list" id="historyList">
+                                </div>
+                        </div>
+                    </section>
+                    
+                    <section class="comparison-section">
+                        <div class="chart-header">
+                            <h2 class="section-title">Comparació</h2>
+                            <div class="chart-controls">
+                                <button class="chart-btn" id="zoomChart" data-tippy-content="Ampliar Gràfic">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                </button>
+                                <button class="chart-btn" id="downloadChart" data-tippy-content="Descarregar Gràfic">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer animate__animated animate__fadeInUp animate__delay-1s">
+            <p>Una experiència d'hidratació dissenyada per a tu. 💧</p>
+        </footer>
+    </div>
+
+    <div class="modal" id="chartModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal" data-tippy-content="Tancar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2>Comparació amb la Mitjana</h2>
+            <div class="modal-chart-wrapper">
+                <canvas id="zoomedChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <!-- PWA Registration -->
+    <script>
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registrat correctament: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Error en registrar ServiceWorker: ', error);
+                    });
+            });
+        }
+
+        // Detectar si es una PWA instalada
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            console.log('PWA pot ser instal·lada');
+        });
+    </script>
+</body>
+</html>
