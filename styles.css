@@ -37,13 +37,113 @@
 }
 
 body {
+    margin-top: 100px;
     font-family: var(--font-primary);
     background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
     min-height: 100vh;
     color: var(--color-text-primary);
     overflow-x: hidden;
     cursor: default;
-    position: relative;
+}
+
+/* ---------------- NAVBAR "DYNAMIC ISLAND" ---------------- */
+.navbar-island {
+  position: fixed;
+  top: 30px; /* separació del marge superior */
+  left: 30%;
+  width: 100%;
+  max-width: 700px;
+  height: 70px;
+  background: rgba(30, 29, 29, 0.141);
+  backdrop-filter: blur(0.925px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px blur rgba(255, 255, 255, 0);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2rem;
+  z-index: 1000;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s ease;
+  font-size: larger;
+}
+
+/* Efecte flotant */
+.navbar-island:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.35);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #ffffff;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+.nav-logo i {
+  color: #4dd0ff;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 4px rgba(77, 208, 255, 0.5));
+}
+
+/* Enllaços icònics */
+.nav-links {
+  display: flex;
+  gap: 1.3rem;
+  list-style: none;
+  margin: 0;
+}
+
+.nav-links a {
+  color: #e6f6ff;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #4dd0ff;
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* Botó de mode */
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 0.45rem;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(20deg);
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 600px) {
+  .navbar-island {
+    width: 92%;
+    height: 55px;
+    padding: 0 0.9rem;
+  }
+
+  .nav-links {
+    gap: 0.9rem;
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+  }
+
+  .nav-logo span {
+    display: none; /* més minimalista en pantalles petites */
+  }
 }
 
 /* Canvas para el efecto WebGL */
@@ -150,7 +250,7 @@ body {
 .water-drop-panel:hover::before,
 .info-panel:hover::before,
 .modal-content:hover::before {
-    opacity: 1;
+    opacity: 0.3;
 }
 
 @keyframes liquidBorder {
@@ -169,6 +269,7 @@ body {
 /* PANELL GOTA D'AIGUA (EMOJI)    */
 /* ---------------------------------- */
 .water-drop-panel {
+    height: 663px;
     display: flex;
     flex-direction: column;
     align-items: center;

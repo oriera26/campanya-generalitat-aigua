@@ -185,7 +185,7 @@ function initWebGL() {
 
 // Inicializar partículas flotantes
 function initParticles() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 60; i++) {
         createParticle();
     }
 }
@@ -195,7 +195,7 @@ function createParticle() {
     particle.classList.add('particle');
     
     // Tamaño y posición aleatorios
-    const size = Math.random() * 10 + 5;
+    const size = Math.random() * 25 + 10;
     const posX = Math.random() * 100;
     const delay = Math.random() * 15;
     
@@ -211,7 +211,7 @@ function createParticle() {
     setTimeout(() => {
         particle.remove();
         createParticle();
-    }, 15000);
+    }, 30000);
 }
 
 // Carregar dades de l'aigua des de localStorage
@@ -741,4 +741,27 @@ function showInstallPrompt() {
             }
         }, 15000);
     }
+}
+
+fetch('navbar.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('navbar-placeholder').innerHTML = data;
+  });
+
+// Canvi de tema (colorit / senzill)
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+
+themeToggle.addEventListener('click', () => {
+  body.classList.toggle('mode-simple');
+  const icon = themeToggle.querySelector('i');
+  icon.classList.toggle('fa-sun');
+  icon.classList.toggle('fa-moon');
+  localStorage.setItem('modeSimple', body.classList.contains('mode-simple'));
+});
+
+if (localStorage.getItem('modeSimple') === 'true') {
+  body.classList.add('mode-simple');
+  themeToggle.querySelector('i').classList.replace('fa-sun', 'fa-moon');
 }
