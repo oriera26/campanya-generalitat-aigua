@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hidratació Premium - Seguiment Avançat d'Aigua</title>
+    <title>Campanya d'Aigua! - COMUNICACIÓ I MARKETING</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1a2b4b">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Hidratació Premium">
+    <meta name="apple-mobile-web-app-title" content="Campanya d'Aigua!">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <link rel="manifest" href="manifest.json">
     
@@ -36,6 +36,54 @@
 
 </head>
 <body>
+    <!-- Navbar - Añadir después de <body> -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <span class="logo-text">Campanya Aigua Comunicació i Marketing</span>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="#inicio" class="nav-link active" data-section="inicio">
+                    <i class="fas fa-home"></i>
+                    <span>Inici</span>
+                </a>
+                <a href="#estadistiques" class="nav-link" data-section="estadistiques">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Estadístiques</span>
+                </a>
+                <a href="#historial" class="nav-link" data-section="historial">
+                    <i class="fas fa-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="#configuracio" class="nav-link" data-section="configuracio">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuració</span>
+                </a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="nav-btn" id="themeToggle" data-tippy-content="Canviar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="nav-btn" id="installBtn" data-tippy-content="Desplega el menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button class="nav-toggle" id="navToggle">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Efecto líquido para la navbar -->
+        <div class="nav-liquid-effect"></div>
+    </nav>
+
     <!-- Canvas para el efecto WebGL -->
     <canvas id="webgl-canvas"></canvas>
     
@@ -43,11 +91,6 @@
     <div class="particles-container" id="particlesContainer"></div>
     
     <div class="container">
-        <header class="header animate__animated animate__fadeInDown">
-            <h1 class="title">Hidratació Premium</h1>
-            <p class="subtitle">El teu assistent personal d'hidratació amb física d'aigua real.</p>
-        </header>
-
         <main class="main-content">
             <section class="app-wrapper animate__animated animate__fadeInUp">
                 <div class="water-drop-panel">

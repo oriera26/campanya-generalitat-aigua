@@ -742,3 +742,134 @@ function showInstallPrompt() {
         }, 15000);
     }
 }
+
+// Funcionalidad de la Navbar
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const themeToggle = document.getElementById('themeToggle');
+    const installBtn = document.getElementById('installBtn');
+
+    // Scroll effect para la navbar
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Toggle del menú móvil
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+    }
+
+    // Cerrar menú al hacer clic en un enlace (móvil)
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        });
+    });
+
+    // Cambio de tema
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Botón de instalación PWA
+    if (installBtn) {
+        installBtn.addEventListener('click', showInstallPrompt);
+        
+        // Ocultar botón si ya está instalado
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'none';
+        }
+    }
+
+    // Navegación suave
+    initSmoothScrolling();
+}
+
+// Cambio de tema
+function toggleTheme() {
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const icon = themeToggle.querySelector('i');
+    
+    body.classList.toggle('dark-theme');
+    
+    if (body.classList.contains('dark-theme')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+// Navegación suave
+function initSmoothScrolling() {
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                // Actualizar enlace activo
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Scroll suave
+                const offsetTop = targetElement.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// Cargar tema guardado
+function loadSavedTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const themeToggle = document.getElementById('themeToggle');
+    
+    if (savedTheme === 'dark' && themeToggle) {
+        document.body.classList.add('dark-theme');
+        const icon = themeToggle.querySelector('i');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    }
+}
+
+// Inicializar la navbar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    initNavbar();
+    loadSavedTheme();
+    
+    // Tooltips para la navbar
+    tippy('#themeToggle', {
+        content: 'Canviar tema',
+        placement: 'bottom',
+        theme: 'premium'
+    });
+    
+    tippy('#installBtn', {
+        content: 'Instal·lar app',
+        placement: 'bottom',
+        theme: 'premium'
+    });
+});
