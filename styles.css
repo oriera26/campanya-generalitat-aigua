@@ -572,7 +572,7 @@ body.dark-theme .nav-btn {
 /* ---------------------------------- */
 .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 80px;
     position: relative;
 }
 
@@ -614,6 +614,7 @@ body.dark-theme .nav-btn {
 .water-drop-panel,
 .info-panel,
 .modal-content {
+    margin-top: 20px;
     background: var(--color-panel-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-strong);
@@ -676,7 +677,6 @@ body.dark-theme .nav-btn {
     flex-direction: column;
     align-items: center;
     position: sticky;
-    top: 60px;
 }
 
 /* Contenidor de la gota */
@@ -696,7 +696,7 @@ body.dark-theme .nav-btn {
     height: 300px;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .water-drop-3d:hover {
@@ -1029,7 +1029,7 @@ body.dark-theme .nav-btn {
         grid-template-columns: 1fr;
     }
     .water-drop-panel {
-        position: static;
+        position: relative;
     }
     .water-drop-container {
         max-width: 300px;

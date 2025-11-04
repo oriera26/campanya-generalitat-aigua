@@ -1,7 +1,7 @@
 // Constants i variables globals
-const DAILY_GOAL = 2000; 
-const GLASS_VOLUME = 250;
-const BOTTLE_VOLUME = 1000;
+const DAILY_GOAL =  3500; 
+const GLASS_VOLUME = 200;
+const BOTTLE_VOLUME =  750;
 
 let currentWater = 0;
 let waterHistory = [];
